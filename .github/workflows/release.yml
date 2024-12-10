@@ -22,7 +22,7 @@ jobs:
 
     - name: Make ZIP
       run: |
-        zip -6r -j materials_windows.zip mtrls/windows/* -x "*.git*" ".github/*" ".gitignore"
+        zip -j materials_windows.zip mtrls/windows/* -x "*.git*" ".github/*" ".gitignore"
 
     - name: Upload to release
       env:
