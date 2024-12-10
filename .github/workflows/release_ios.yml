@@ -1,0 +1,30 @@
+name: Make ZIP and release (iOS)
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag'
+        required: true
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: git clone
+      run: |
+        git clone https://${{ secrets.MURGI }}@github.com/mcpebd/mtrls.git
+
+    - name: Make ZIP
+      run: |
+        pushd 'mtrls/ios' ; zip -r ../../materials_ios.zip * -x "*.git*" ".github/*" ".gitignore" ; popd
+
+    - name: Upload to release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh release create ${{ github.event.inputs.release_tag }} materials_ios.zip --title "${{ github.event.inputs.release_tag }}" --notes "What a great day to be alive! $(date +'%Y%m%d')" --latest

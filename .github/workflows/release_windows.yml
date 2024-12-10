@@ -1,4 +1,4 @@
-name: Make ZIP and release 
+name: Make ZIP and release (Windows)
 
 on:
   workflow_dispatch:
@@ -6,7 +6,6 @@ on:
       release_tag:
         description: 'Release tag'
         required: true
-        default: 'v1.21.'
 
 jobs:
   create-release:
