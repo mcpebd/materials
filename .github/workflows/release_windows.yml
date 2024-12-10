@@ -27,4 +27,4 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release create ${{ github.event.inputs.release_tag }} materials_windows.zip --title "${{ github.event.inputs.release_tag }}" --notes "${{ github.event.inputs.release_tag }} $(date +'%Y%m%d')" --latest
+        gh release create ${{ github.event.inputs.release_tag }} materials_windows.zip --title "${{ github.event.inputs.release_tag }}" --notes "Uploaded on $(TZ='Asia/Dhaka' date +'%b %d, %Y %H%M') (UTC +06)" --latest
