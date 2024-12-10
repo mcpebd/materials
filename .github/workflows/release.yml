@@ -28,4 +28,4 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release create ${{ github.event.inputs.release_tag }} materials_windows.zip --title "${{ github.event.inputs.release_tag }}" --notes "What a great day to be alive! $(date +'%Y-%m-%d')" --latest
+        gh release create ${{ github.event.inputs.release_tag }} materials_windows.zip --title "${{ github.event.inputs.release_tag }}" --notes "What a great day to be alive! $(date +'%Y%m%d')" --latest
