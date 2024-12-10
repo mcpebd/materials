@@ -1,0 +1,32 @@
+name: Make ZIP and release 
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag'
+        required: true
+        default: 'v1.21.'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: git clone
+      run: |
+        git clone https://${{ secrets.MURGI }}@github.com/mcpebd/mtrls.git
+
+    - name: Make ZIP
+      run: |
+        pushd windows
+        zip -6r materials_windows.zip . -x "*.git*" ".github/*" ".gitignore"
+
+    - name: Upload to release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh release create ${{ github.event.inputs.release_tag }} materials_windows.zip --title "${{ github.event.inputs.release_tag }}" --notes "What a great day to be alive! $(date +'%Y-%m-%d')" --latest
