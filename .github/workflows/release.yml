@@ -18,11 +18,11 @@ jobs:
 
     - name: git clone
       run: |
-        git clone https://${{ secrets.MURGI }}@github.com/mcpebd/mtrls.git .
+        git clone https://${{ secrets.MURGI }}@github.com/mcpebd/mtrls.git
 
     - name: Make ZIP
       run: |
-        zip -6r materials_windows.zip windows/. -x "*.git*" ".github/*" ".gitignore"
+        zip -6r materials_windows.zip mtrls/windows/. -x "*.git*" ".github/*" ".gitignore"
 
     - name: Upload to release
       env:
