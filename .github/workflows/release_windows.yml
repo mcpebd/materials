@@ -22,9 +22,18 @@ jobs:
     - name: Make ZIP
       run: |
         pushd 'mtrls/windows' ; zip -r ../../materials_windows_${{ github.event.inputs.release_tag }}.zip * -x "*.git*" ".github/*" ".gitignore" ; popd
+        chmod +x verifyBackup
+        ./verifyBackup "{{ github.event.inputs.release_tag }}"
 
     - name: Upload to release
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release create ${{ github.event.inputs.release_tag }} materials_windows.zip --title "${{ github.event.inputs.release_tag }}" --notes "Uploaded on $(TZ='Asia/Dhaka' date +'%Y%m%d_%H%M') (UTC +06)\nApplies to `${{ github.event.inputs.release_tag }}+`" --latest
+        gh release create \
+        ${{ github.event.inputs.release_tag }} \
+        materials_windows_{{ github.event.inputs.release_tag }}.zip \
+        verifyBackup_${{ github.event.inputs.release_tag }}.bat \
+        --title "${{ github.event.inputs.release_tag }}" \
+        --notes "Uploaded on $(TZ='Asia/Dhaka' date +'%Y%m%d_%H%M') (UTC +06) \
+        Applies to `${{ github.event.inputs.release_tag }}+`" \
+        --latest

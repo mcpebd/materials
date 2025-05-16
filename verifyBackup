@@ -1,0 +1,94 @@
+pushd mtrls/windows
+HASH_LINES=$(
+  for f in *; do
+    h=$(sha256sum "$f" | cut -d' ' -f1)
+    # wrap in quotes so .bat sees: "filename=hash"
+    echo "\"$f=$h\""
+  done
+)
+popd
+
+cat > verifyBackup_$1.bat <<EOF
+@echo off
+setlocal enabledelayedexpansion
+
+>nul 2>&1 certutil /? || (echo [91m[^^!] certutil not found in PATH[0m & goto :EOF)
+
+set gameVersion=v1.21.80
+
+cd /d "%~dp0"
+if /i "%~1" equ "hash" goto hashBackup
+
+if not exist "Materials (backup)" (
+    echo Please put this script in a folder where all materials are stored in a folder named "Materials (backup)"
+    echo.
+    echo Example:
+    echo.
+    echo Current folder
+    echo      ^|
+    echo      ^|-- verifyBackup_%gameVersion%.bat
+    echo      ^|-- Materials ^(backup^)
+    echo                ^|
+    echo                ^|- Actor.material.bin
+    echo                ^|- RenderChunk.material.bin
+    echo                ^|- Sky.material.bin
+    echo                ^|- ...
+    goto failure
+)
+
+:verifyBackup
+set "totalMaterials="
+set "matchFailed="
+set "progressCounter="
+set "fileCounter="
+for %%M in ("Materials (backup)\*") do set /a fileCounter+=1
+call :setHash
+if !fileCounter! neq !totalMaterials! echo [91mFile count mismatch ^(!fileCounter! NEQ !totalMaterials!^)[0m & goto failure
+
+for %%M in ("Materials (backup)\*") do (
+    set /a progressCounter+=1
+    echo [1F[0KVerifying %gameVersion% materials ^(!progressCounter!/!totalMaterials!^)
+    for /f "tokens=*" %%H in ('certutil -hashfile "%%M" SHA256 ^| findstr /v ":"') do (
+        if "%%H" neq "!%%~nxM!" (
+            echo.
+            echo [91m[^^!] Materials doesn't match with %gameVersion%[0m
+            :failure
+            echo.
+            echo Press any key to exit...
+            pause >nul
+            exit 1
+        )
+    )
+)
+echo.
+echo [92m[*] All materials are OK.[0m
+echo.
+echo Press any key to exit...
+pause >nul
+exit 0
+
+:setHash
+for %%V in (
+$HASH_LINES
+) do (
+    set %%V
+    set /a totalMaterials+=1
+)
+
+
+goto :EOF
+
+:hashBackup
+if exist "materials_hash_%gameVersion%.txt" del /q /f ".\materials_hash_%gameVersion%.txt"
+for %%M in ("Materials (backup)\*") do (
+    for /f "tokens=*" %%H in ('certutil -hashfile "%%M" SHA256 ^| findstr /v ":"') do (
+        echo %%~nxM=%%H>>materials_hash_%gameVersion%.txt
+    )
+)
+goto :EOF
+EOF
+
+sudo apt-get update
+sudo apt-get install -y dos2unix
+
+unix2dos -f verifyBackup_$1.bat
