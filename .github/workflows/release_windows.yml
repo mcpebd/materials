@@ -23,7 +23,7 @@ jobs:
       run: |
         pushd 'mtrls/windows' ; zip -r ../../materials_windows_${{ github.event.inputs.release_tag }}.zip * -x "*.git*" ".github/*" ".gitignore" ; popd
         chmod +x verifyBackup
-        ./verifyBackup "{{ github.event.inputs.release_tag }}"
+        ./verifyBackup "${{ github.event.inputs.release_tag }}"
 
     - name: Upload to release
       env:
