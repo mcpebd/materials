@@ -34,6 +34,5 @@ jobs:
         materials_windows_{{ github.event.inputs.release_tag }}.zip \
         verifyBackup_${{ github.event.inputs.release_tag }}.bat \
         --title "${{ github.event.inputs.release_tag }}" \
-        --notes "Uploaded on $(TZ='Asia/Dhaka' date +'%Y%m%d_%H%M') (UTC +06) \
-        Applies to `${{ github.event.inputs.release_tag }}+`" \
+        --notes-file "notes.txt" \
         --latest
