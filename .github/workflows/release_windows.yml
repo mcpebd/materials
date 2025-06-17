@@ -31,7 +31,7 @@ jobs:
       run: |
         gh release create \
         ${{ github.event.inputs.release_tag }} \
-        materials_windows_{{ github.event.inputs.release_tag }}.zip \
+        materials_windows_${{ github.event.inputs.release_tag }}.zip \
         verifyBackup_${{ github.event.inputs.release_tag }}.bat \
         --title "${{ github.event.inputs.release_tag }}" \
         --notes-file "notes.txt" \
