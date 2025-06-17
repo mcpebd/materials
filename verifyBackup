@@ -15,7 +15,7 @@ Applies to `$1 - $1+`
 
 Double click `verifyMaterials_$1.bat` to verify your materials in `Materials (backup)`  or from your installed Minecraft.
 
-cat > verifyBackup_$1.bat <<EOF
+cat > "verifyBackup_$1.bat" <<EOF
 @echo off
 setlocal enabledelayedexpansion
 
@@ -98,4 +98,4 @@ EOF
 sudo apt-get update
 sudo apt-get install -y dos2unix
 
-unix2dos -f verifyBackup_$1.bat
+unix2dos -f "verifyBackup_$1.bat"
