@@ -13,7 +13,7 @@ Uploaded on "Uploaded on $(TZ='Asia/Dhaka' date +'%Y%m%d_%H%M') (UTC +06)
 
 Applies to `$1 - $1+`
 
-Double click `verifyMaterials_$1.bat` to verify your materials in `Materials (backup)`  or from your installed Minecraft.
+Double click `verifyBackup_$1.bat` to verify your materials in `Materials (backup)`  or from your installed Minecraft.
 EOF
 
 cat > "verifyBackup_$1.bat" <<'EOF'
