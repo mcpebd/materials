@@ -48,8 +48,11 @@ if not exist "Materials (backup)" (
     echo.
     choice /c yn /n >nul
     if !errorlevel! neq 1 (goto failure)
+    echo Getting Minecraft location using PowerShell...
+    echo.
+    echo.
     set "MCLOCATION="
-    for /f "tokens=* delims=" %%i in ('powershell -NoProfile -Command "(Get-AppxPackage -Name Microsoft.MinecraftUWP).InstallLocation') do (set MCLOCATION=%%i)
+    for /f "tokens=* delims=" %%i in ('powershell -NoProfile -Command "(Get-AppxPackage -Name Microsoft.MinecraftUWP).InstallLocation"') do (set MCLOCATION=%%i)
     if not defined MCLOCATION (
         echo Minecraft is not installed.
         goto failure
