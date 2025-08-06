@@ -13,10 +13,10 @@ Uploaded on $(TZ='Asia/Dhaka' date +'%Y%m%d_%H%M') (UTC +06)
 
 Applies to \`$1 - $1+\`
 
-Double click \`verifyBackup_$1.bat\` to verify your materials in \`Materials (backup)\` or from your installed Minecraft.
+Double click \`verifyMaterials_$1.bat\` to verify your materials in \`Materials (backup)\` or from your installed Minecraft.
 EOF
 
-cat > "verifyBackup_$1.bat" <<EOF
+cat > "verifyMaterials_$1.bat" <<EOF
 @echo off
 setlocal enabledelayedexpansion
 
@@ -34,26 +34,43 @@ if not exist "Materials (backup)" (
     echo.
     echo Current folder
     echo      ^|
-    echo      ^|-- verifyBackup_%gameVersion%.bat
+    echo      ^|-- verifyMaterials_%gameVersion%.bat
     echo      ^|-- Materials ^(backup^)
     echo                ^|
     echo                ^|- Actor.material.bin
     echo                ^|- RenderChunk.material.bin
     echo                ^|- Sky.material.bin
     echo                ^|- ...
-    goto failure
+    echo.
+    echo Do you want to check materials from installed Minecraft instead?
+    echo.
+    echo [Y] Yes    [N] No
+    echo.
+    choice /c yn /n >nul
+    if !errorlevel! neq 1 (goto failure)
+    set "MCLOCATION="
+    for /f "tokens=* delims=" %%i in ('powershell -NoProfile -Command "(Get-AppxPackage -Name Microsoft.MinecraftUWP).InstallLocation') do (set MCLOCATION=%%i)
+    if not defined MCLOCATION (
+        echo Minecraft is not installed.
+        goto failure
+    )
+    set "materialsLocation=!MCLOCATION!\data\renderer\materials"
+) else (
+    set "materialsLocation=Materials (backup)"
 )
 
-:verifyBackup
+
+
+:verifyMaterials
 set "totalMaterials="
 set "matchFailed="
 set "progressCounter="
 set "fileCounter="
-for %%M in ("Materials (backup)\*") do set /a fileCounter+=1
+for %%M in ("%materialsLocation%\*") do set /a fileCounter+=1
 call :setHash
-if !fileCounter! neq !totalMaterials! echo [91mFile count mismatch ^(!fileCounter! NEQ !totalMaterials!^)[0m & goto failure
+if !fileCounter! neq !totalMaterials! echo [91mFile count mismatch ^(!fileCounter! ^^!= !totalMaterials!^)[0m & goto failure
 
-for %%M in ("Materials (backup)\*") do (
+for %%M in ("%materialsLocation%\*") do (
     set /a progressCounter+=1
     echo [1F[0KVerifying %gameVersion% materials ^(!progressCounter!/!totalMaterials!^)
     for /f "tokens=*" %%H in ('certutil -hashfile "%%M" SHA256 ^| findstr /v ":"') do (
@@ -99,4 +116,4 @@ EOF
 sudo apt-get update
 sudo apt-get install -y dos2unix
 
-unix2dos -f "verifyBackup_$1.bat"
+unix2dos -f "verifyMaterials_$1.bat"
