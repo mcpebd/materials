@@ -22,7 +22,9 @@ jobs:
 
     - name: Make ZIP
       run: |
-        pushd 'mtrls/windows' ; zip -r ../../materials_windows_${{ github.event.inputs.release_tag }}.zip * -x "*.git*" ".github/*" ".gitignore" ; popd
+        pushd 'mtrls/windows' ; zip -r -6 ../../materials_windows_${{ github.event.inputs.release_tag }}.zip * -x "*.git*" ".github/*" ".gitignore" ; popd
+        pushd 'mtrls/ios' ; zip -r -6 ../../materials_ios_${{ github.event.inputs.release_tag }}.zip * -x "*.git*" ".github/*" ".gitignore" ; popd
+        pushd 'mtrls/android' ; zip -r -6 ../../materials_android_${{ github.event.inputs.release_tag }}.zip * -x "*.git*" ".github/*" ".gitignore" ; popd
         chmod +x verifyBackup
         ./verifyBackup "${{ github.event.inputs.release_tag }}"
 
@@ -33,9 +35,12 @@ jobs:
         gh release create \
         ${{ github.event.inputs.release_tag }} \
         materials_windows_${{ github.event.inputs.release_tag }}.zip \
+        materials_ios_${{ github.event.inputs.release_tag }}.zip \
+        materials_android_${{ github.event.inputs.release_tag }}.zip \
         verifyMaterials_${{ github.event.inputs.release_tag }}.bat \
         --title "${{ github.event.inputs.release_tag }}" \
         --notes-file "notes.txt" \
         --latest
+
 
 
