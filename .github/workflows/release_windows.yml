@@ -5,7 +5,7 @@ on:
     inputs:
       release_tag:
         description: 'Release tag'
-        default: 'v1.21.'
+        default: 'v1.26.'
         required: true
 
 jobs:
@@ -41,6 +41,7 @@ jobs:
         --title "${{ github.event.inputs.release_tag }}" \
         --notes-file "notes.txt" \
         --latest
+
 
 
 
