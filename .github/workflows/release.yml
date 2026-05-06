@@ -1,4 +1,5 @@
 name: Release materials (all platforms)
+run-name: Release materials for ${{ inputs.release_tag }}
 
 on:
   workflow_dispatch:
