@@ -1,4 +1,4 @@
-name: Make ZIP and release (Windows)
+name: Release materials (all platforms)
 
 on:
   workflow_dispatch:
